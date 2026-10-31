@@ -227,7 +227,7 @@
   <div id="ammoToast"></div>
 
   <!-- kept for state/debug, visually hidden -->
-  <div id="scoreBox" class="hidden">SCORE <b id="scoreNum">0</b> / <span id="scoreTarget">25</span><br>
+  <div id="scoreBox" class="hidden">SCORE <b id="scoreNum">0</b> / <span id="scoreTarget">∞</span><br>
     DEATHS <span id="deathNum">0</span></div>
 
   <!-- bottom-left: class badge, med cross, segmented HP -->
@@ -268,7 +268,7 @@
 <!-- START MENU -->
 <div id="startMenu" class="overlay">
   <h1>NEON STRIKE</h1>
-  <div class="sub">city deathmatch · 5 bots · first to 25</div>
+  <div class="sub">city deathmatch · 5 bots · no kill limit</div>
   <div class="cols" style="margin-top:6px">
     <div class="col">
       <h3>MOVE</h3>
@@ -313,7 +313,7 @@
 <!-- END -->
 <div id="endMenu" class="overlay hidden">
   <h1 id="endTitle" style="font-size:52px">VICTORY</h1>
-  <div class="sub" id="endSub">25 kills reached</div>
+  <div class="sub" id="endSub">time up</div>
   <table id="endTable"></table>
   <button id="againBtn" class="btn">PLAY AGAIN</button>
   <button id="backBtn" class="btn ghost">BACK TO MENU</button>
@@ -375,7 +375,7 @@ const TUNE = {
   mouseSens: 1.2,
   maxRange: 160,
   matchTime: 300,
-  target: 25
+  target: Infinity
 };
 
 // difficulty presets: scale bot aim, damage, reaction and how often they re-burst
@@ -3081,12 +3081,14 @@ function damageBot(b, dmg, part, attacker) {
     addKillfeed('You', b.name, part === 'head', false, currentWeapon().id);
     $('scoreNum').textContent = state.score;
     spawnAmmoDrop(b.pos);          // small ammo pack where the bot fell
-    if (state.score >= TUNE.target) endMatch(true);
+    if (Number.isFinite(TUNE.target) && state.score >= TUNE.target) endMatch(true);
   } else if (attacker) {
     // bot vs bot kill still counts for the standings
     attacker.kills++;
     addKillfeed(attacker.name, b.name, part === 'head', false, attacker.weapon);
-    if (attacker.kills >= TUNE.target) endMatch(false, `${attacker.name} reached ${TUNE.target} kills first`);
+    if (Number.isFinite(TUNE.target) && attacker.kills >= TUNE.target) {
+      endMatch(false, `${attacker.name} reached ${TUNE.target} kills first`);
+    }
   }
 }
 
@@ -4198,7 +4200,10 @@ function loop() {
 
     if (!INTRO.active && state.timeLeft <= 0) {
       state.timeLeft = 0;
-      endMatch(false);
+      // no kill limit: when the clock runs out, whoever has the most kills takes it
+      const topBot = bots.slice().sort((a, b) => b.kills - a.kills)[0];
+      if (!topBot || player.kills > topBot.kills) endMatch(true);
+      else endMatch(false, `${topBot.name} leads with ${topBot.kills} kills`);
       return;
     }
 
