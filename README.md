@@ -1,25 +1,22 @@
 # NEON STRIKE
 
-Krunker-style browser arena FPS — warm dusk shopping plaza, four weapons, five bots, live scoreboard screen.
-Single file, no build step, no external assets.
+Krunker-style browser arena FPS. One file, no build step, no assets.
 
----
+## Run
 
-## Quick start
+Double-click `index.html`, then press **DEPLOY** and click the game view to lock the mouse.
 
-1. Double-click `index.html`, or open it in Chrome / Edge / Firefox.
-2. Press **DEPLOY**, then click the view to lock the mouse.
-
-Needs internet on first load — three.js is pulled from a CDN (jsDelivr, unpkg fallback).
-If it fails you get an "ENGINE OFFLINE" panel; serve the folder instead:
+Needs internet on first load: three.js is pulled from a CDN (jsDelivr, unpkg fallback).
+If the engine fails to load, the page shows an "ENGINE OFFLINE" panel. Fix: check network,
+or serve the folder locally:
 
 ```
 python -m http.server 8080
 ```
 
-then open `http://localhost:8080/`.
+then open the printed `http://localhost:8080/` URL.
 
-Desktop only (mouse + keyboard), WebGL2 required.
+Chrome, Edge, Firefox with WebGL2. Desktop only (mouse + keyboard).
 
 ## Controls
 
@@ -27,116 +24,83 @@ Desktop only (mouse + keyboard), WebGL2 required.
 | --- | --- |
 | W A S D | run |
 | SPACE | jump (hold to bunny hop) |
-| SHIFT | slide — speed boost, jump out of it to keep momentum |
+| SHIFT | slide — free speed boost, jump out of it to keep momentum |
 | Left mouse | fire |
-| Right mouse | aim down sight (sniper gets the scope) |
+| Right mouse | aim down sight (sniper gets scope) |
 | R | reload |
 | 1 / 2 / 3 / 4 | assault rifle / auto pistol / sniper / combat dagger |
 | Q or mouse wheel | cycle weapon |
 | TAB (hold) | scoreboard |
-| ESC | pause — RESUME / RESTART MATCH / QUIT TO MENU |
+| ESC | pause (releases mouse) |
 
-QUIT TO MENU also exists on the end screen; it returns to the title screen and discards the match score.
+## Rules
 
-## Match rules
-
-**Skydive intro.** Every match starts in first person, facing into the plaza, 70 m up. A four-engine
-transport crosses the sky from left to right while you freefall, then the canopy opens and you glide
-to your spawn. The five bots drop alongside on their own coloured canopies, staggered across the sky.
-Bots stay frozen until everyone touches down, and the match clock only starts on landing.
-Click or press any key to skip and land the whole lobby instantly.
-
-**Mode.** Free-for-all, 5 bots, 5:00, first to 25 kills. Bots are hostile to everyone — they fight you
-and each other. If a bot reaches 25 first you lose. You respawn 3 s after dying.
-
-**Damage.** Headshots do 2×+. AR kills in two headshots, the sniper one-shots body and head.
-Health regenerates after 5.5 s without damage. Landing a kill drops an ammo pack.
-
-**Difficulties** (start screen, default Medium):
+Free-for-all, 5 bots, 5:00 match, first to 25 kills.
+Difficulty is picked on the start screen (Easy / Medium / Hard, default Medium):
 
 | | accuracy | aim cap | damage | reaction | burst pause | speed | simultaneous shooters | spawn shield |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Easy | ×0.65 | 0.50 | ×0.65 | ×1.5 | ×1.35 | ×0.90 | 2 | 3.5 s |
+| Easy | ×0.65 | 0.50 | ×0.65 | ×1.5 | ×1.35 | ×0.9 | 2 | 3.5 s |
 | Medium | ×1.0 | 0.72 | ×1.0 | ×1.0 | ×1.0 | ×1.0 | 2 | 3.0 s |
 | Hard | ×1.8 | 0.95 | ×1.4 | ×0.5 | ×0.55 | ×1.18 | 3 | 1.8 s |
 
-Hard bots also turn 35% of their hits into headshots, miss much tighter, lead moving targets, plant
-their feet mid-burst, panic-strafe and hop when tagged, and push forward while strafing.
+Hard bots also convert 35% of their hits into headshots, and their misses land much closer to you.
+Bots are hostile to everyone: they fight you **and** each other. If a bot reaches 25 first, you lose.
+Headshots do 2x+ damage — AR kills in 2, sniper one-shots body and head.
+Health regenerates after 5.5 s without damage. You respawn 3 s after dying.
 
-## Features
+You get a 2.5–3 s spawn shield (health label shows `SHIELD n s`) — use it to reach cover.
+Bots need 0.4–0.8 s of continuous line of sight before firing, and at most 2 bots shoot at you at once.
 
-**Weapons**
-- AR (30/120) — red-dot sight, open ring with a centred glowing dot, no housing block
-- Auto pistol (18/90, full-auto 660 rpm) — compensator, extended mag, compact handgun silhouette
-- Sniper (5/25) — oversized scope with bell, turrets, transparent lens, centre red dot overlay
-- Combat dagger — single extruded karambit silhouette, outside-in horizontal slash, 45 dmg / 67 headshot
-- Hitscan ray-AABB against head / body / leg boxes with wall occlusion
-- Reserve ammo pool; reloads pull from it; weapon swaps take 0.3–0.65 s with a view-model dip
+## What's inside
 
-**Bots**
-- FFA targeting across player and bots, LOS checks, strafing, burst fire, respawn away from enemies
-- Two-handed carry pose only while engaged; otherwise arms swing with the stride
-- Weapon switching by range (AR / sniper / pistol primary, dagger under 3.4 m) with the same swap delay
-- Bots bunny-hop, dodge-jump when hit, fire from the real barrel tip with muzzle flashes
-- Blocky skins: layered hair, ears / nose / cheeks, jacket with zip, pocket, badge, buckle, hip pouch,
-  backpack, elbow pads, gloves, knee pads, boots with soles, thigh holster, cap or glowing headphones
-- Five palettes: orange-hair green tee, blue-hair tech jacket, teal hoodie, magenta jacket, moss work wear
+- single HTML file, ~1.7k lines, inline CSS + ES module script
+- custom AABB collision (axis-separated push-out, auto step-up on stairs, slide/jump bhop physics)
+- hitscan weapons with ray-AABB against head/body/leg hitboxes, wall occlusion
+- 4 weapons: AR (30/120), auto pistol (18/90, full-auto 660 rpm, compensator), sniper (5/25, scope), combat dagger (melee, 2.7 m fan, 45 dmg / 67 headshot, outside-in slash)
+- ammo has a reserve pool now; reloads pull from it
+- solo factions: every combatant has a tag and colour (`NEON` for you, `VOID`/`RUST`/`ACID`/`COBALT`/`PLASMA` for bots)
+- live standings panel top-right: rank, faction dot, name, kills, your row highlighted
+- minimap top-left: real-time positions — faction-coloured dots for every bot, HP pip, player arrow
+- detailed view models: receiver, rail, handguard, barrel, muzzle brake, glass/mag, stock, red-dot optic on the AR, oversized scope with bell and turrets on the sniper, tan hands + blue sleeve
+- karambit is a single extruded claw silhouette (solid at any swing angle) with a dark spine tube, neon edge tube and ring pommel
+- the auto pistol is compact: short slide, exposed frame, angled grip, compensator and extended mag — no stock or handguard, so it never reads as a rifle
+- bots use blocky Minecraft-style skins: hair cap/fringe/sideburns, sclera+iris eyes and brows, collared shirt with belt, shoulder pads and backpack, two-tone sleeve/forearm arms, striped cargo legs, glowing soles and chest strip
+- 5 skin palettes: orange-hair green tee, blue-hair cyan-visor tech jacket, teal hoodie, magenta jacket, moss work wear; hurt flash tints every cloth material
+- beach dressing: sand patches and palm trees around the arena edges
+- bot AI: FFA targeting (player + other bots), LOS checks, strafing, burst fire, respawn away from the nearest enemy
+- hard mode flips on an `advanced` bot profile: they lead moving targets, plant their feet mid-burst and reposition after, panic-strafe and hop when tagged, bunny-hop the fight, land headshots on 35% of hits — and they push forward while strafing, only breaking contact below 22 hp and then no more than once every 5–8 s
+- bots behave like the player: they hop while moving and while rushing, carry an AR / sniper / pistol loadout, switch to the pistol when a sniper gets crowded, and pull out the dagger below 3.4 m for melee swings
+- bots hold their weapon in a one-handed carry pose only while engaged; when they are just moving or hunting they lower the gun and the arms swing naturally with the stride (blend at 6/s both ways), so they no longer look permanently raised
+- the support (left) arm never grips the gun: it always swings with the stride, even while the bot is firing
+- each bot gun is fully detailed (receiver, stock, handguard, barrel + brake, grip, magazine, rail/red-dot for the AR, scope with rings and bipod for the sniper) and is parented to the right forearm, so it tracks the hands
+- tracers and muzzle flashes spawn at the actual barrel tip of the held gun
+- bot-vs-bot damage and kills are tracked in the standings and killfeed
+- HUD: radar alone in the top-left, clock/mode/server/ping block top-centre (no overlap), standings top-right, segmented HP bottom-left, big `mag/reserve` ammo bottom-right
+- weapon swaps take time: 0.3 s for the dagger, 0.35–0.65 s for guns; the view model dips and no shot can be fired until the swap finishes. Bots use the same rule, they just swap their held mesh when the timer expires
+- killfeed shows a small weapon glyph between killer and victim (AR / auto pistol / pistol / sniper / dagger), red-tinted on your own death
+- ammo drops: every kill you land spawns a glowing pack where the bot fell; walk over it (1.2 m) to add reserve ammo to your current weapon (+40% of a mag, capped at 2x reserve). Packs despawn after 22 s
+- procedural WebAudio SFX (no audio files)
+- enemy health bars: screen-projected, occlusion-checked, colour-coded, shows `name · hp`
+- footsteps: distance-driven step sounds for you and nearby bots, landing thud + camera shake, dust puffs at bot feet, animated leg swing and body bob
+- HUD: health, ammo, match timer, killfeed, dynamic crosshair, hitmarkers, minimap, scoreboard
+- neon arena: central tower + stairs, crates, two roof buildings, side cover
 
-**HUD**
-- Circular radar top-left with live faction-coloured dots and HP arcs
-- Clock / mode / server / ping block top-centre, live standings top-right
-- Segmented HP bar bottom-left, big `mag/reserve` ammo bottom-right, `kills vs deaths` line
-- Killfeed with weapon glyphs, hitmarkers, floating enemy health bars, damage vignette
-- Big wall screen on the north wall: 1024×512 canvas redrawn twice a second with the live MVP
-  (blocky avatar from that player's palette, name, kills) and a live top-six ranking
+## Push to GitHub
 
-**Map — warm dusk shopping plaza**
-- Open central pavilion: two half-height wooden walls and two steel columns under a red/white striped canopy
-- Small crates, striped market barriers and parked cars as cover; lowered mall wings
-- Ten awning storefronts around the perimeter (cafe, shoes, tech, books, bakery, arcade, flowers, music,
-  food court, mall), plus department-store and cinema wings
-- Raised pavement ring, benches, dumpsters, vending machines, road barriers, crosswalks, rooftop AC units
-- Big top-centre billboards and neon signage, sodium street lamps, wall pipes
-- Far scenery: 700 m city ground plane, 28 lit mid-distance blocks with rooftop beacons, 36 street lamps,
-  30-tower skyline in fog
-- Warm palette: sandstone facades, warm asphalt and paving, amber neon, peach-to-orange dusk sky
-- One 1024² sun shadow map; walls, props and bots cast, floor and props receive
+Target repo: <https://github.com/Hyker923/FPS> (already created, currently holds only a stub README).
 
-**Audio** — all procedural WebAudio: gunshots per weapon, hit and headshot blips, reload clicks,
-footsteps with distance falloff, landing thud, knife swing, bot gunfire. No audio files.
+1. Double-click `push-to-github.bat` — the URL is pre-filled.
+2. If git says the push was rejected (the remote already has a commit), answer `y` to the force-push prompt. That overwrites the stub README with this project.
+3. Authenticate in the credential window (use a PAT as the password if needed).
 
-## How it is built
-
-- One `index.html` (~4k lines): inline CSS, inline ES module, no dependencies except three.js from CDN
-- Custom AABB physics: axis-separated push-out, auto step-up, slide, bunny-hop air control
-- Procedural canvas textures (asphalt, sandstone facade with lit windows, pavement, concrete, metal,
-  wood, signage) — no image files
-- Everything else is box/cylinder geometry built at load: map, guns, characters, plane, chutes
-
-## Deploy to GitHub
-
-Target repo: <https://github.com/Hyker923/FPS>
-
-**Option A — helper script**
-
-1. Double-click `push-to-github.bat` (URL pre-filled).
-2. If git rejects the push because the remote already has a commit, answer `y` to force-push.
-3. Authenticate in the credential window (PAT as password if needed).
-
-**Option B — web upload**
-
-Open the repo → **Add file → Upload files** → drag `index.html` and `README.md` in → **Commit changes**.
-
-**Play online:** repo → Settings → Pages → Branch `main` / root, then open
-<https://hyker923.github.io/FPS/>.
+GitHub Pages: repo → Settings → Pages → Branch `main` / root. The game then runs at
+<https://hyker923.github.io/FPS/> — no build step, the CDN import works over https.
 
 ## Tuning
 
-All knobs are near the top of the script:
+All knobs live near the top of the script in the sandbox:
 
 - `TUNE` — gravity, jump, speeds, slide time, match length, kill target
-- `DIFFICULTIES` — per-difficulty accuracy, damage, reaction, speed, shooter cap, spawn shield
-- `WEAPONS` — damage, headshot multiplier, RPM, mag / reserve, reload, spread, ADS FOV, recoil, swap time
-- `BOT_WEAPONS` / `BOT_PRIMARIES` / `BOT_COUNT` — bot loadouts and roster
-- `SKINS` — character palettes and accessories (`acc: 'cap' | 'phones' | 'none'`)
-- `INTRO` — skydive duration
+- `WEAPONS` — damage, headshot multiplier, RPM, mag size, reload, spread, ADS FOV, recoil
+- `BOT_COUNT`, `BOT_NAMES`, `BOT_COLORS`
